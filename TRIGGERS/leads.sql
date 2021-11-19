@@ -1,5 +1,5 @@
  -- TABLE -- 
-  CREATE TABLE `smarkio_aneel`.`leads_count` (
+  CREATE TABLE `banco`.`leads_count` (
   `idleads` INT NOT NULL AUTO_INCREMENT,
   `date` DATE NOT NULL,
   `menu` VARCHAR(255) NOT NULL,
@@ -16,19 +16,19 @@
    PRIMARY KEY (`idleads`));
 
 -- TRIGGER --
-USE smarkio_aneel;
+USE banco;
 DELIMITER |
 CREATE TRIGGER tg_leads_in AFTER INSERT ON leads
 FOR EACH ROW
 BEGIN
 	IF (SELECT EXISTS (
-        SELECT * FROM smarkio_aneel.leads_count 
+        SELECT * FROM banco.leads_count 
         WHERE date = NEW.lead_creation_day
         AND menu = CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END
         AND comentario_text = CASE WHEN (NEW.problemas_atendimento IS NOT NULL) THEN NEW.problemas_atendimento ELSE '-' END
         AND feedback_text = CASE WHEN (NEW.atendimento_foi_util IS NOT NULL) THEN NEW.atendimento_foi_util ELSE '-' END
         AND api_text = CASE WHEN (NEW.erro_api IS NOT NULL) THEN NEW.erro_api ELSE '-' END)=0)
-    THEN INSERT INTO smarkio_aneel.leads_count
+    THEN INSERT INTO banco.leads_count
     (date, menu, comentario_text, feedback_text, api_text)
     VALUES (NEW.lead_creation_day,
     CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END,
@@ -38,7 +38,7 @@ BEGIN
     END IF;
 
     IF (NEW.horario_atendimento = '1') 
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET transbordo = transbordo + 1
     WHERE date = NEW.lead_creation_day
         AND menu = CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END
@@ -48,7 +48,7 @@ BEGIN
     END IF;	
 
     IF (NEW.escolher_opcao IS NOT NULL)
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET interacao = interacao + 1
     WHERE date = NEW.lead_creation_day
         AND menu = CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END
@@ -56,7 +56,7 @@ BEGIN
         AND feedback_text = CASE WHEN (NEW.atendimento_foi_util IS NOT NULL) THEN NEW.atendimento_foi_util ELSE '-' END
         AND api_text = CASE WHEN (NEW.erro_api IS NOT NULL) THEN NEW.erro_api ELSE '-' END;
     
-    UPDATE smarkio_aneel.leads_count
+    UPDATE banco.leads_count
 	    SET retencao = 
         CASE WHEN (NEW.horario_atendimento = '1') THEN retencao + 0
         WHEN (NEW.atendimento_foi_util = 'Sim') THEN retencao + 1
@@ -74,7 +74,7 @@ BEGIN
     END IF;	
 
     IF (NEW.problemas_atendimento IS NOT NULL)  
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET comentario = comentario + 1
     WHERE date = NEW.lead_creation_day
         AND menu = CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END
@@ -84,7 +84,7 @@ BEGIN
     END IF;	
 
     IF (NEW.atendimento_foi_util IS NOT NULL)  
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET feedback = feedback + 1
     WHERE date = NEW.lead_creation_day
         AND menu = CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END
@@ -92,7 +92,7 @@ BEGIN
         AND feedback_text = CASE WHEN (NEW.atendimento_foi_util IS NOT NULL) THEN NEW.atendimento_foi_util ELSE '-' END
         AND api_text = CASE WHEN (NEW.erro_api IS NOT NULL) THEN NEW.erro_api ELSE '-' END;
  
-    UPDATE smarkio_aneel.leads_count
+    UPDATE banco.leads_count
 	    SET positivo = CASE
         WHEN (NEW.atendimento_foi_util = 'Sim') THEN positivo + 1
         ELSE positivo + 0 END
@@ -104,7 +104,7 @@ BEGIN
     END IF;	
 
     IF (NEW.erro_api != '200')  
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET api = api + 1
     WHERE date = NEW.lead_creation_day
         AND menu = CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END
@@ -115,19 +115,19 @@ BEGIN
 END 
 
 -- TRIGGER UPDATE --
-USE smarkio_aneel;
+USE banco;
 DELIMITER |
 CREATE TRIGGER tg_leads_up AFTER UPDATE ON leads
 FOR EACH ROW
 BEGIN
 	IF (SELECT EXISTS (
-        SELECT * FROM smarkio_aneel.leads_count 
+        SELECT * FROM banco.leads_count 
         WHERE date = NEW.lead_creation_day
         AND menu = CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END
         AND comentario_text = CASE WHEN (NEW.problemas_atendimento IS NOT NULL) THEN NEW.problemas_atendimento ELSE '-' END
         AND feedback_text = CASE WHEN (NEW.atendimento_foi_util IS NOT NULL) THEN NEW.atendimento_foi_util ELSE '-' END
         AND api_text = CASE WHEN (NEW.erro_api IS NOT NULL) THEN NEW.erro_api ELSE '-' END)=0)
-    THEN INSERT INTO smarkio_aneel.leads_count
+    THEN INSERT INTO banco.leads_count
     (date, menu, comentario_text, feedback_text, api_text)
     VALUES (NEW.lead_creation_day,
     CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END,
@@ -137,7 +137,7 @@ BEGIN
     END IF;
 
     IF (NEW.horario_atendimento = '1') 
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET transbordo = transbordo + 1
     WHERE date = NEW.lead_creation_day
         AND menu = CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END
@@ -147,7 +147,7 @@ BEGIN
     END IF;	
 
     IF (NEW.escolher_opcao IS NOT NULL)
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET interacao = interacao + 1
     WHERE date = NEW.lead_creation_day
         AND menu = CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END
@@ -155,7 +155,7 @@ BEGIN
         AND feedback_text = CASE WHEN (NEW.atendimento_foi_util IS NOT NULL) THEN NEW.atendimento_foi_util ELSE '-' END
         AND api_text = CASE WHEN (NEW.erro_api IS NOT NULL) THEN NEW.erro_api ELSE '-' END;
     
-    UPDATE smarkio_aneel.leads_count
+    UPDATE banco.leads_count
 	    SET retencao = 
         CASE WHEN (NEW.horario_atendimento = '1') THEN retencao + 0
         WHEN (NEW.atendimento_foi_util = 'Sim') THEN retencao + 1
@@ -173,7 +173,7 @@ BEGIN
     END IF;	
 
     IF (NEW.problemas_atendimento IS NOT NULL)  
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET comentario = comentario + 1
     WHERE date = NEW.lead_creation_day
         AND menu = CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END
@@ -183,7 +183,7 @@ BEGIN
     END IF;	
 
     IF (NEW.atendimento_foi_util IS NOT NULL)  
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET feedback = feedback + 1
     WHERE date = NEW.lead_creation_day
         AND menu = CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END
@@ -191,7 +191,7 @@ BEGIN
         AND feedback_text = CASE WHEN (NEW.atendimento_foi_util IS NOT NULL) THEN NEW.atendimento_foi_util ELSE '-' END
         AND api_text = CASE WHEN (NEW.erro_api IS NOT NULL) THEN NEW.erro_api ELSE '-' END;
  
-    UPDATE smarkio_aneel.leads_count
+    UPDATE banco.leads_count
 	    SET positivo = CASE
         WHEN (NEW.atendimento_foi_util = 'Sim') THEN positivo + 1
         ELSE positivo + 0 END
@@ -203,7 +203,7 @@ BEGIN
     END IF;	
 
     IF (NEW.erro_api != '200')  
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET api = api + 1
     WHERE date = NEW.lead_creation_day
         AND menu = CASE WHEN (NEW.escolher_opcao IS NOT NULL) THEN NEW.escolher_opcao ELSE '-' END
@@ -213,7 +213,7 @@ BEGIN
     END IF;
 
     IF (OLD.horario_atendimento = '1') 
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET transbordo = transbordo - 1
     WHERE date = OLD.lead_creation_day
         AND menu = CASE WHEN (OLD.escolher_opcao IS NOT NULL) THEN OLD.escolher_opcao ELSE '-' END
@@ -223,7 +223,7 @@ BEGIN
     END IF;	
 
     IF (OLD.escolher_opcao IS NOT NULL)
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET interacao = interacao - 1
     WHERE date = OLD.lead_creation_day
         AND menu = CASE WHEN (OLD.escolher_opcao IS NOT NULL) THEN OLD.escolher_opcao ELSE '-' END
@@ -231,7 +231,7 @@ BEGIN
         AND feedback_text = CASE WHEN (OLD.atendimento_foi_util IS NOT NULL) THEN OLD.atendimento_foi_util ELSE '-' END
         AND api_text = CASE WHEN (OLD.erro_api IS NOT NULL) THEN OLD.erro_api ELSE '-' END;
     
-    UPDATE smarkio_aneel.leads_count
+    UPDATE banco.leads_count
 	    SET retencao = 
         CASE WHEN (OLD.horario_atendimento = '1') THEN retencao - 0
         WHEN (OLD.atendimento_foi_util = 'Sim') THEN retencao - 1
@@ -249,7 +249,7 @@ BEGIN
     END IF;	
 
     IF (OLD.problemas_atendimento IS NOT NULL)  
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET comentario = comentario - 1
     WHERE date = OLD.lead_creation_day
         AND menu = CASE WHEN (OLD.escolher_opcao IS NOT NULL) THEN OLD.escolher_opcao ELSE '-' END
@@ -259,7 +259,7 @@ BEGIN
     END IF;	
 
     IF (OLD.atendimento_foi_util IS NOT NULL)  
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET feedback = feedback - 1
     WHERE date = OLD.lead_creation_day
         AND menu = CASE WHEN (OLD.escolher_opcao IS NOT NULL) THEN OLD.escolher_opcao ELSE '-' END
@@ -267,7 +267,7 @@ BEGIN
         AND feedback_text = CASE WHEN (OLD.atendimento_foi_util IS NOT NULL) THEN OLD.atendimento_foi_util ELSE '-' END
         AND api_text = CASE WHEN (OLD.erro_api IS NOT NULL) THEN OLD.erro_api ELSE '-' END;
  
-    UPDATE smarkio_aneel.leads_count
+    UPDATE banco.leads_count
 	    SET positivo = CASE
         WHEN (OLD.atendimento_foi_util = 'Sim') THEN positivo - 1
         ELSE positivo - 0 END
@@ -279,7 +279,7 @@ BEGIN
     END IF;	
 
     IF (OLD.erro_api != '200')  
-    THEN UPDATE smarkio_aneel.leads_count
+    THEN UPDATE banco.leads_count
 	    SET api = api - 1
     WHERE date = OLD.lead_creation_day
         AND menu = CASE WHEN (OLD.escolher_opcao IS NOT NULL) THEN OLD.escolher_opcao ELSE '-' END
@@ -290,7 +290,7 @@ BEGIN
 END 
 
 -- SELECT -- 
-INSERT INTO smarkio_aneel.leads_count (`date`, `menu`, `comentario_text`, `feedback_text`,`api_text`,`interacao`,`transbordo`,
+INSERT INTO banco.leads_count (`date`, `menu`, `comentario_text`, `feedback_text`,`api_text`,`interacao`,`transbordo`,
 `retencao`,`comentario`,`feedback`,`api`,`positivo`)
 SELECT c.date, c.menu, c.comentario_text, c.feedback_text, c.api_text, c.interacao, c.transbordo,
 c.retencao, c.comentario, c.feedback, c.api, c.positivo
@@ -316,7 +316,7 @@ SELECT
     SUM(CASE WHEN (atendimento_foi_util IS NOT NULL) THEN 1 ELSE 0 END) AS feedback,
     SUM(CASE WHEN (erro_api != '200') THEN 1 ELSE 0 END) AS api,
     SUM(CASE WHEN (atendimento_foi_util = 'Sim') THEN 1 ELSE 0 END) AS positivo
-   	FROM smarkio_aneel.leads 
+   	FROM banco.leads 
     WHERE lead_creation_day >= '2021-02-01' 
 	GROUP BY date, menu, comentario_text, feedback_text, api_text) AS c
   ON DUPLICATE KEY UPDATE
